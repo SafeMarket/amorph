@@ -19,7 +19,7 @@
     "mocha": "^3.1.2"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha --no-timeouts"
   },
   "repository": {
     "type": "git",

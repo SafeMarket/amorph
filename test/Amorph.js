@@ -19,6 +19,18 @@ describe('Amorph', () => {
     Amorph.loadConverter('lowercase', 'uppercase', (lowercase) => { return lowercase.toUpperCase() })
   })
 
+  it('should have 2 forms', () => {
+    expect(Amorph.forms.length).to.equal(2)
+  })
+
+  it('should re-load lowercase-uppercase converter', () => {
+    Amorph.loadConverter('lowercase', 'uppercase', (lowercase) => { return lowercase.toUpperCase() })
+  })
+
+  it('should still have 2 forms', () => {
+    expect(Amorph.forms.length).to.equal(2)
+  })
+
   it('should not be ready', () => {
     expect(Amorph.isReady).to.be.false
   })
@@ -111,6 +123,29 @@ describe('Amorph', () => {
 
   it('should convert deadbeef to base58', () => {
     expect(deadbeef.to('base58')).to.equal('6h8cQN')
+  })
+
+  describe('readme examples', () => {
+
+    it('should work', () => {
+
+      Amorph.loadConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
+      Amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
+      Amorph.ready()
+
+      new Amorph('hello world', 'string').to('exclamation')
+      // >> HELLO WORLD!
+
+      Amorph.loadConverters(require('amorph-hex'))
+      Amorph.loadConverters(require('amorph-base58'))
+      Amorph.ready()
+
+      const deadbeef2 = new Amorph('deadbeef', 'hex')
+      expect(deadbeef2.to('hex.prefixed')).to.equal('0xdeadbeef')
+      expect(deadbeef2.to('uint8Array')).to.deep.equal(new Uint8Array([222, 173, 190, 239]))
+      expect(deadbeef2.to('base58')).to.equal('6h8cQN')
+    })
+
   })
 
 })

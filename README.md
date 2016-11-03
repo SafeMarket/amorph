@@ -16,8 +16,8 @@ $ npm i amorph --save
 ```js
 
 const Amorph = require('amorph')
-amorph.loadConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
-amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
+Amorph.loadConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
+Amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
 Amorph.ready()
 
 new Amorph('hello world', 'string').to('exclamation')
