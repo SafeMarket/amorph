@@ -35,6 +35,10 @@ describe('Amorph', () => {
     expect(Amorph.isReady).to.be.false
   })
 
+  it('should throw FormNotStringError', () => {
+    expect(() => { new Amorph('hello') }).to.throw(Amorph.errors.FormNotStringError)
+  })
+
   it('should create hellowolrd Amorph', () => {
     const lowercase = 'hello world!'
     helloworld = new Amorph('hello world!', 'lowercase')
@@ -92,7 +96,7 @@ describe('Amorph', () => {
   it('should have path from uint8Array to hex.prefixed via hex', () => {
     const path = Amorph.paths.get('uint8Array', 'hex.prefixed')
     expect(path).to.be.instanceOf(Array)
-    expect(path).to.be.deep.equal(['hex'])
+    expect(path).to.be.deep.equal(['uint8Array', 'hex', 'hex.prefixed'])
   })
 
   it('should convert deadbeef to hex.prefixed', () => {
@@ -123,6 +127,15 @@ describe('Amorph', () => {
 
   it('should convert deadbeef to base58', () => {
     expect(deadbeef.to('base58')).to.equal('6h8cQN')
+  })
+
+  it('should have path from hex.prefixed to base58', () => {
+    expect(Amorph.paths.get('hex.prefixed', 'base58')).to.be.instanceOf(Array)
+    expect(Amorph.paths.get('hex.prefixed', 'base58')).to.deep.equal(['hex.prefixed', 'hex', 'uint8Array', 'base58'])
+  })
+
+  it('should convert hex.prefixed to base58', () => {
+    expect(new Amorph('0xdeadbeef', 'hex.prefixed').to('base58')).to.equal('6h8cQN')
   })
 
   describe('readme examples', () => {
