@@ -85,6 +85,10 @@ describe('Amorph', () => {
     expect(deadbeef.truth).to.equal(uint8Array)
   })
 
+  it('should convert deadbeef to uint8Array', () => {
+    expect(deadbeef.to('uint8Array')).to.deep.equal(new Uint8Array([222, 173, 190, 239]))
+  })
+
   it('should throw NoFormError when trying to convert to piglatin', () => {
     expect(() => { deadbeef.to('piglatin') }).to.throw(Amorph.errors.NoFormError)
   })
