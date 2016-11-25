@@ -39,6 +39,10 @@ describe('Amorph', () => {
     expect(() => { new Amorph('hello') }).to.throw(Amorph.errors.FormNotStringError)
   })
 
+  it('should throw NoFormError', () => {
+    expect(() => { new Amorph('hello', 'world') }).to.throw(Amorph.errors.NoFormError)
+  })
+
   it('should create hellowolrd Amorph', () => {
     const lowercase = 'hello world!'
     helloworld = new Amorph('hello world!', 'lowercase')
