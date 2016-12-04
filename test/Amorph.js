@@ -43,12 +43,16 @@ describe('Amorph', () => {
     expect(() => { new Amorph('hello', 'world') }).to.throw(Amorph.errors.NoFormError)
   })
 
-  it('should create hellowolrd Amorph', () => {
+  it('should create helloworld Amorph', () => {
     const lowercase = 'hello world!'
     helloworld = new Amorph('hello world!', 'lowercase')
     expect(helloworld).to.be.instanceOf(Amorph)
     expect(helloworld.form).to.equal('lowercase')
     expect(helloworld.truth).to.equal(lowercase)
+  })
+
+  it('helloworld to string should be "[Amorph lowercase:helloworld]"', () => {
+    return expect(helloworld.toString()).to.equal('[Amorph lowercase : hello world!]')
   })
 
   it('should throw NotReadyError when trying to convert', () => {
@@ -87,6 +91,10 @@ describe('Amorph', () => {
     expect(deadbeef).to.be.instanceOf(Amorph)
     expect(deadbeef.form).to.equal('uint8Array')
     expect(deadbeef.truth).to.equal(uint8Array)
+  })
+
+  it('deadbeef to string should be "[Amorph uint8Array:[222, 173, 190, 239]]"', () => {
+    return expect(deadbeef.toString()).to.equal('[Amorph uint8Array : 222,173,190,239]')
   })
 
   it('should convert deadbeef to uint8Array', () => {
