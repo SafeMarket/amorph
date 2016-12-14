@@ -1,10 +1,11 @@
 const Amorph = require('../')
 const hexConverters = require('amorph-hex')
 const base58Converters = require('amorph-base58')
+const bignumberConverters = require('amorph-bignumber')
 const expect = require('chai').expect
 
 describe('Amorph', () => {
-  
+
   let helloworld, deadbeef
 
   it('should be ready', () => {
@@ -152,6 +153,56 @@ describe('Amorph', () => {
 
   it('should convert hex.prefixed to base58', () => {
     expect(new Amorph('0xdeadbeef', 'hex.prefixed').to('base58')).to.equal('6h8cQN')
+  })
+
+  describe('.equals', () => {
+
+    it('should load bignumberConverters', () => {
+      Amorph.loadConverters(bignumberConverters)
+      Amorph.ready()
+    })
+
+    it('amorph(10, number) should equal amorph(10, number)', () => {
+      const amorph1 = new Amorph(10, 'number')
+      const amorph2 = new Amorph(10, 'number')
+      expect(amorph1.equals(amorph2)).to.equal(true)
+    })
+
+    it('amorph(10, number) should NOT equal amorph(20, number)', () => {
+      const amorph1 = new Amorph(10, 'number')
+      const amorph2 = new Amorph(20, 'number')
+      expect(amorph1.equals(amorph2)).to.equal(false)
+    })
+
+    it('amorph(10, number) should equal amorph(a, hex)', () => {
+      const amorph1 = new Amorph(10, 'number')
+      const amorph2 = new Amorph('a', 'hex')
+      expect(amorph1.equals(amorph2)).to.equal(true)
+    })
+
+    it('amorph(0a, hex) should equal amorph(10, number)', () => {
+      const amorph1 = new Amorph('0a', 'hex')
+      const amorph2 = new Amorph(10, 'number')
+      expect(amorph1.equals(amorph2)).to.equal(true)
+    })
+
+    it('amorph(10, number) should equal(bignumber) amorph(a, hex)', () => {
+      const amorph1 = new Amorph(10, 'number')
+      const amorph2 = new Amorph('a', 'hex')
+      expect(amorph1.equals(amorph2), 'bignumber').to.equal(true)
+    })
+
+    it('amorph(10, number) should NOT equal(hex) amorph(a, hex)', () => {
+      const amorph1 = new Amorph(10, 'number')
+      const amorph2 = new Amorph('a', 'hex')
+      expect(amorph1.equals(amorph2, 'hex')).to.equal(true)
+    })
+
+    it('amorph(11, number) should NOT equal amorph(a, hex)', () => {
+      const amorph1 = new Amorph(11, 'number')
+      const amorph2 = new Amorph('a', 'hex')
+    })
+
   })
 
   describe('readme examples', () => {
