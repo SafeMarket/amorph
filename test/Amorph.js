@@ -2,75 +2,73 @@ const Amorph = require('../')
 const hexConverters = require('amorph-hex')
 const base58Converters = require('amorph-base58')
 const bignumberConverters = require('amorph-bignumber')
-const expect = require('chai').expect
+const chai = require('chai')
+
+chai.should()
 
 describe('Amorph', () => {
 
-  let helloworld, deadbeef
+  let helloworld
+  let deadbeef
 
   it('should be ready', () => {
-    expect(Amorph.isReady).to.be.true
+    Amorph.isReady.should.equal(true)
   })
 
   it('should have errors object', () => {
-    expect(Amorph.errors).to.be.an.object
+    Amorph.errors.should.to.be.instanceOf(Object)
   })
 
   it('should load lowercase-uppercase converter', () => {
     Amorph.loadConverter('lowercase', 'uppercase', (lowercase) => { return lowercase.toUpperCase() })
   })
 
-  it('should have 2 forms', () => {
-    expect(Amorph.forms.length).to.equal(2)
-  })
-
   it('should re-load lowercase-uppercase converter', () => {
     Amorph.loadConverter('lowercase', 'uppercase', (lowercase) => { return lowercase.toUpperCase() })
   })
 
-  it('should still have 2 forms', () => {
-    expect(Amorph.forms.length).to.equal(2)
-  })
-
   it('should not be ready', () => {
-    expect(Amorph.isReady).to.be.false
+    Amorph.isReady.should.equal(false)
   })
 
   it('should throw FormNotStringError', () => {
-    expect(() => { new Amorph('hello') }).to.throw(Amorph.errors.FormNotStringError)
+    // eslint-disable-next-line no-new
+    (() => { new Amorph('hello') }).should.throw(Amorph.errors.FormNotStringError)
   })
 
   it('should throw NoFormError', () => {
-    expect(() => { new Amorph('hello', 'world') }).to.throw(Amorph.errors.NoFormError)
+    // eslint-disable-next-line no-new
+    (() => { new Amorph('hello', 'world') }).should.throw(Amorph.errors.NoFormError)
   })
 
   it('should create helloworld Amorph', () => {
     const lowercase = 'hello world!'
     helloworld = new Amorph('hello world!', 'lowercase')
-    expect(helloworld).to.be.instanceOf(Amorph)
-    expect(helloworld.form).to.equal('lowercase')
-    expect(helloworld.truth).to.equal(lowercase)
+    helloworld.should.be.instanceOf(Amorph)
+    helloworld.form.should.equal('lowercase')
+    helloworld.truth.should.equal(lowercase)
   })
 
   it('helloworld to string should be "[Amorph lowercase:helloworld]"', () => {
-    return expect(helloworld.toString()).to.equal('[Amorph lowercase : hello world!]')
+    return helloworld.toString().should.equal('[Amorph lowercase : hello world!]')
   })
 
   it('should throw NotReadyError when trying to convert', () => {
-    expect(() => { helloworld.to('uppercase') }).to.throw(Amorph.errors.NotReadyError)
+    (() => { helloworld.to('uppercase') }).should.throw(Amorph.errors.NotReadyError)
   })
 
   it('should ready', () => {
     Amorph.ready()
-    expect(Amorph.isReady).to.be.true
+    Amorph.isReady.should.be.equal(true)
   })
 
   it('should convert lowercase to uppercase', () => {
-    expect(new Amorph('hello world!', 'lowercase').to('uppercase')).to.equal('HELLO WORLD!')
+    const amorph = new Amorph('hello world!', 'lowercase')
+    amorph.to('uppercase').should.equal('HELLO WORLD!')
   })
 
   it('should throw NotNobjectError when trying to load a non-nobject', () => {
-    expect(() => { Amorph.loadConverters({}) }).to.throw(Amorph.errors.NotNobjectError)
+    (() => { Amorph.loadConverters({}) }).should.throw(Amorph.errors.NotNobjectError)
   })
 
   it('should load hexConverters', () => {
@@ -78,55 +76,55 @@ describe('Amorph', () => {
   })
 
   it('should not be ready', () => {
-    expect(Amorph.isReady).to.be.false
+    Amorph.isReady.should.equal(false)
   })
 
   it('should ready', () => {
     Amorph.ready()
-    expect(Amorph.isReady).to.be.true
+    Amorph.isReady.should.equal(true)
   })
 
   it('should create deadbeef Amorph', () => {
     const uint8Array = new Uint8Array([222, 173, 190, 239])
     deadbeef = new Amorph(uint8Array, 'uint8Array')
-    expect(deadbeef).to.be.instanceOf(Amorph)
-    expect(deadbeef.form).to.equal('uint8Array')
-    expect(deadbeef.truth).to.equal(uint8Array)
+    deadbeef.should.be.instanceOf(Amorph)
+    deadbeef.form.should.equal('uint8Array')
+    deadbeef.truth.should.equal(uint8Array)
   })
 
   it('deadbeef to string should be "[Amorph uint8Array:[222, 173, 190, 239]]"', () => {
-    return expect(deadbeef.toString()).to.equal('[Amorph uint8Array : 222,173,190,239]')
+    deadbeef.toString().should.equal('[Amorph uint8Array : 222,173,190,239]')
   })
 
   it('should convert deadbeef to uint8Array', () => {
-    expect(deadbeef.to('uint8Array')).to.deep.equal(new Uint8Array([222, 173, 190, 239]))
+    deadbeef.to('uint8Array').should.deep.equal(new Uint8Array([222, 173, 190, 239]))
   })
 
   it('should throw NoFormError when trying to convert to piglatin', () => {
-    expect(() => { deadbeef.to('piglatin') }).to.throw(Amorph.errors.NoFormError)
+    (() => { deadbeef.to('piglatin') }).should.throw(Amorph.errors.NoFormError)
   })
 
   it('should convert deadbeef to hex', () => {
-    expect(deadbeef.to('hex')).to.equal('deadbeef')
+    deadbeef.to('hex').should.equal('deadbeef')
   })
 
   it('should have path from uint8Array to hex.prefixed via hex', () => {
-    const path = Amorph.paths.get('uint8Array', 'hex.prefixed')
-    expect(path).to.be.instanceOf(Array)
-    expect(path).to.be.deep.equal(['uint8Array', 'hex', 'hex.prefixed'])
+    const path = Amorph.crossConverter.paths.get('uint8Array', 'hex.prefixed')
+    path.should.be.instanceOf(Array)
+    path.should.be.deep.equal(['uint8Array', 'hex', 'hex.prefixed'])
   })
 
   it('should convert deadbeef to hex.prefixed', () => {
-    expect(deadbeef.to('hex.prefixed')).to.equal('0xdeadbeef')
+    deadbeef.to('hex.prefixed').should.equal('0xdeadbeef')
   })
 
   it('should not have path from uint8Array to uppercase', () => {
-    const path = Amorph.paths.get('uint8Array', 'uppercase')
-    expect(path).to.be.undefined
+    const path = Amorph.crossConverter.paths.get('uint8Array', 'uppercase')
+    chai.expect(path).to.equal(undefined)
   })
 
   it('should throw NoPathError when converting deadbeef to lowercase', () => {
-    expect(() => { deadbeef.to('uppercase') }).to.throw(Amorph.errors.NoPathError)
+    (() => { deadbeef.to('uppercase') }).should.throw(Amorph.errors.NoPathError)
   })
 
   it('should load base58Converters', () => {
@@ -134,25 +132,25 @@ describe('Amorph', () => {
   })
 
   it('should not be ready', () => {
-    expect(Amorph.isReady).to.be.false
+    Amorph.isReady.should.equal(false)
   })
 
   it('should ready', () => {
     Amorph.ready()
-    expect(Amorph.isReady).to.be.true
+    Amorph.isReady.should.equal(true)
   })
 
   it('should convert deadbeef to base58', () => {
-    expect(deadbeef.to('base58')).to.equal('6h8cQN')
+    deadbeef.to('base58').should.equal('6h8cQN')
   })
 
   it('should have path from hex.prefixed to base58', () => {
-    expect(Amorph.paths.get('hex.prefixed', 'base58')).to.be.instanceOf(Array)
-    expect(Amorph.paths.get('hex.prefixed', 'base58')).to.deep.equal(['hex.prefixed', 'hex', 'uint8Array', 'base58'])
+    Amorph.crossConverter.paths.get('hex.prefixed', 'base58').should.be.instanceOf(Array)
+    Amorph.crossConverter.paths.get('hex.prefixed', 'base58').should.deep.equal(['hex.prefixed', 'hex', 'uint8Array', 'base58'])
   })
 
   it('should convert hex.prefixed to base58', () => {
-    expect(new Amorph('0xdeadbeef', 'hex.prefixed').to('base58')).to.equal('6h8cQN')
+    new Amorph('0xdeadbeef', 'hex.prefixed').to('base58').should.equal('6h8cQN')
   })
 
   describe('.equals', () => {
@@ -165,42 +163,43 @@ describe('Amorph', () => {
     it('amorph(10, number) should equal amorph(10, number)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph(10, 'number')
-      expect(amorph1.equals(amorph2)).to.equal(true)
+      amorph1.equals(amorph2).should.equal(true)
     })
 
     it('amorph(10, number) should NOT equal amorph(20, number)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph(20, 'number')
-      expect(amorph1.equals(amorph2)).to.equal(false)
+      amorph1.equals(amorph2).should.equal(false)
     })
 
     it('amorph(10, number) should equal amorph(a, hex)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph('a', 'hex')
-      expect(amorph1.equals(amorph2)).to.equal(true)
+      amorph1.equals(amorph2).should.equal(true)
     })
 
     it('amorph(0a, hex) should equal amorph(10, number)', () => {
       const amorph1 = new Amorph('0a', 'hex')
       const amorph2 = new Amorph(10, 'number')
-      expect(amorph1.equals(amorph2)).to.equal(true)
+      amorph1.equals(amorph2).should.equal(true)
     })
 
-    it('amorph(10, number) should equal(bignumber) amorph(a, hex)', () => {
+    it('amorph(10, number) should NOT equal(bignumber) amorph(a, hex)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph('a', 'hex')
-      expect(amorph1.equals(amorph2), 'bignumber').to.equal(true)
+      amorph1.equals(amorph2, 'bignumber').should.equal(false)
     })
 
     it('amorph(10, number) should NOT equal(hex) amorph(a, hex)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph('a', 'hex')
-      expect(amorph1.equals(amorph2, 'hex')).to.equal(true)
+      amorph1.equals(amorph2, 'hex').should.equal(true)
     })
 
     it('amorph(11, number) should NOT equal amorph(a, hex)', () => {
       const amorph1 = new Amorph(11, 'number')
       const amorph2 = new Amorph('a', 'hex')
+      amorph1.equals(amorph2, 'hex').should.not.equal(true)
     })
 
   })
@@ -210,20 +209,20 @@ describe('Amorph', () => {
     it('should work', () => {
 
       Amorph.loadConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
-      Amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
+      Amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return `${uppercase}!` })
       Amorph.ready()
 
       new Amorph('hello world', 'string').to('exclamation')
       // >> HELLO WORLD!
 
-      Amorph.loadConverters(require('amorph-hex'))
-      Amorph.loadConverters(require('amorph-base58'))
+      Amorph.loadConverters(hexConverters)
+      Amorph.loadConverters(base58Converters)
       Amorph.ready()
 
       const deadbeef2 = new Amorph('deadbeef', 'hex')
-      expect(deadbeef2.to('hex.prefixed')).to.equal('0xdeadbeef')
-      expect(deadbeef2.to('uint8Array')).to.deep.equal(new Uint8Array([222, 173, 190, 239]))
-      expect(deadbeef2.to('base58')).to.equal('6h8cQN')
+      deadbeef2.to('hex.prefixed').should.equal('0xdeadbeef')
+      deadbeef2.to('uint8Array').should.deep.equal(new Uint8Array([222, 173, 190, 239]))
+      deadbeef2.to('base58').should.equal('6h8cQN')
     })
 
   })
