@@ -3,6 +3,12 @@ const hexConverters = require('amorph-hex')
 const base58Converters = require('amorph-base58')
 const bignumberConverters = require('amorph-bignumber')
 const chai = require('chai')
+const FormNotStringError = require('../errors/FormNotString')
+const NoFormError = require('../errors/NoForm')
+const NotNobjectError = require('../errors/NotNobject')
+const NotReadyError = require('../errors/NotReady')
+const CCNoPathError = require('cross-converter/errors/NoPath')
+const CCNoFormError = require('cross-converter/errors/NoForm')
 
 chai.should()
 
@@ -13,10 +19,6 @@ describe('Amorph', () => {
 
   it('should be ready', () => {
     Amorph.isReady.should.equal(true)
-  })
-
-  it('should have errors object', () => {
-    Amorph.errors.should.to.be.instanceOf(Object)
   })
 
   it('should load lowercase-uppercase converter', () => {
@@ -33,12 +35,12 @@ describe('Amorph', () => {
 
   it('should throw FormNotStringError', () => {
     // eslint-disable-next-line no-new
-    (() => { new Amorph('hello') }).should.throw(Amorph.errors.FormNotStringError)
+    (() => { new Amorph('hello') }).should.throw(FormNotStringError)
   })
 
   it('should throw NoFormError', () => {
     // eslint-disable-next-line no-new
-    (() => { new Amorph('hello', 'world') }).should.throw(Amorph.errors.NoFormError)
+    (() => { new Amorph('hello', 'world') }).should.throw(NoFormError)
   })
 
   it('should create helloworld Amorph', () => {
@@ -54,7 +56,7 @@ describe('Amorph', () => {
   })
 
   it('should throw NotReadyError when trying to convert', () => {
-    (() => { helloworld.to('uppercase') }).should.throw(Amorph.errors.NotReadyError)
+    (() => { helloworld.to('uppercase') }).should.throw(NotReadyError)
   })
 
   it('should ready', () => {
@@ -68,7 +70,7 @@ describe('Amorph', () => {
   })
 
   it('should throw NotNobjectError when trying to load a non-nobject', () => {
-    (() => { Amorph.loadConverters({}) }).should.throw(Amorph.errors.NotNobjectError)
+    (() => { Amorph.loadConverters({}) }).should.throw(NotNobjectError)
   })
 
   it('should load hexConverters', () => {
@@ -100,8 +102,8 @@ describe('Amorph', () => {
     deadbeef.to('uint8Array').should.deep.equal(new Uint8Array([222, 173, 190, 239]))
   })
 
-  it('should throw NoFormError when trying to convert to piglatin', () => {
-    (() => { deadbeef.to('piglatin') }).should.throw(Amorph.errors.NoFormError)
+  it('should throw CCNoFormError when trying to convert to piglatin', () => {
+    (() => { deadbeef.to('piglatin') }).should.throw(CCNoFormError)
   })
 
   it('should convert deadbeef to hex', () => {
@@ -123,8 +125,8 @@ describe('Amorph', () => {
     chai.expect(path).to.equal(undefined)
   })
 
-  it('should throw NoPathError when converting deadbeef to lowercase', () => {
-    (() => { deadbeef.to('uppercase') }).should.throw(Amorph.errors.NoPathError)
+  it('should throw CCNoPathError when converting deadbeef to lowercase', () => {
+    (() => { deadbeef.to('uppercase') }).should.throw(CCNoPathError)
   })
 
   it('should load base58Converters', () => {

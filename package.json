@@ -7,8 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "js-combinatorics": "^0.5.2",
-    "lodash": "^4.16.4",
+    "cross-converter": "0.0.1",
     "nobject": "^0.0.3",
     "testable-error": "^0.0.2"
   },
