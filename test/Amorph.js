@@ -1,14 +1,16 @@
 const Amorph = require('../')
-const hexConverters = require('amorph-hex')
-const base58Converters = require('amorph-base58')
-const bignumberConverters = require('amorph-bignumber')
+const hexPlugin = require('amorph-hex')
+const base58Plugin = require('amorph-base58')
+const bignumberPlugin = require('amorph-bignumber')
 const chai = require('chai')
 const FormNotStringError = require('../errors/FormNotString')
+const PluginVersionError = require('../errors/PluginVersionError')
 const NoFormError = require('../errors/NoForm')
 const NotNobjectError = require('../errors/NotNobject')
 const NotReadyError = require('../errors/NotReady')
 const CCNoPathError = require('cross-converter/errors/NoPath')
 const CCNoFormError = require('cross-converter/errors/NoForm')
+const Nobject = require('nobject')
 
 chai.should()
 
@@ -73,8 +75,8 @@ describe('Amorph', () => {
     (() => { Amorph.loadConverters({}) }).should.throw(NotNobjectError)
   })
 
-  it('should load hexConverters', () => {
-    Amorph.loadConverters(hexConverters)
+  it('should load hexPlugin', () => {
+    Amorph.loadPlugin(hexPlugin)
   })
 
   it('should not be ready', () => {
@@ -129,8 +131,8 @@ describe('Amorph', () => {
     (() => { deadbeef.to('uppercase') }).should.throw(CCNoPathError)
   })
 
-  it('should load base58Converters', () => {
-    Amorph.loadConverters(base58Converters)
+  it('should load base58Plugin', () => {
+    Amorph.loadPlugin(base58Plugin)
   })
 
   it('should not be ready', () => {
@@ -155,10 +157,24 @@ describe('Amorph', () => {
     new Amorph('0xdeadbeef', 'hex.prefixed').to('base58').should.equal('6h8cQN')
   })
 
+  it('should throw plugin version error with blank nobject', () => {
+    (() => {
+      Amorph.loadPlugin(new Nobject())
+    }).should.throw(PluginVersionError)
+  })
+
+  it('should throw plugin version error pluginVersion 2', () => {
+    (() => {
+      Amorph.loadPlugin({
+        pluginVersion: 2
+      })
+    }).should.throw(PluginVersionError)
+  })
+
   describe('.equals', () => {
 
-    it('should load bignumberConverters', () => {
-      Amorph.loadConverters(bignumberConverters)
+    it('should load bignumberPlugin', () => {
+      Amorph.loadPlugin(bignumberPlugin)
       Amorph.ready()
     })
 
@@ -186,10 +202,10 @@ describe('Amorph', () => {
       amorph1.equals(amorph2).should.equal(true)
     })
 
-    it('amorph(10, number) should NOT equal(bignumber) amorph(a, hex)', () => {
+    it('amorph(10, number) should equal(bignumber) amorph(a, hex)', () => {
       const amorph1 = new Amorph(10, 'number')
       const amorph2 = new Amorph('a', 'hex')
-      amorph1.equals(amorph2, 'bignumber').should.equal(false)
+      amorph1.equals(amorph2, 'bignumber').should.equal(true)
     })
 
     it('amorph(10, number) should NOT equal(hex) amorph(a, hex)', () => {
@@ -202,6 +218,12 @@ describe('Amorph', () => {
       const amorph1 = new Amorph(11, 'number')
       const amorph2 = new Amorph('a', 'hex')
       amorph1.equals(amorph2, 'hex').should.not.equal(true)
+    })
+
+    it('amorph([1, 2, 3], array) should equal amorph([1, 2, 3], array)', () => {
+      const amorph1 = new Amorph([1, 2, 3], 'array')
+      const amorph2 = new Amorph([1, 2, 3], 'array')
+      amorph1.equals(amorph2).should.equal(true)
     })
 
   })
@@ -217,8 +239,8 @@ describe('Amorph', () => {
       new Amorph('hello world', 'string').to('exclamation')
       // >> HELLO WORLD!
 
-      Amorph.loadConverters(hexConverters)
-      Amorph.loadConverters(base58Converters)
+      Amorph.loadPlugin(hexPlugin)
+      Amorph.loadPlugin(base58Plugin)
       Amorph.ready()
 
       const deadbeef2 = new Amorph('deadbeef', 'hex')

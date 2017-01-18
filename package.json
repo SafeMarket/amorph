@@ -12,9 +12,9 @@
     "testable-error": "^0.0.2"
   },
   "devDependencies": {
-    "amorph-base58": "0.0.1",
-    "amorph-bignumber": "0.0.2",
-    "amorph-hex": "0.0.2",
+    "amorph-base58": "^1.0.0",
+    "amorph-bignumber": "^1.0.0",
+    "amorph-hex": "^1.0.2",
     "chai": "^3.5.0",
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",

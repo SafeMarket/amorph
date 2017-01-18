@@ -4,9 +4,11 @@ const FormNotStringError = require('./errors/FormNotString')
 const NoFormError = require('./errors/NoForm')
 const NotNobjectError = require('./errors/NotNobject')
 const NotReadyError = require('./errors/NotReady')
+const PluginVersionError = require('./errors/PluginVersionError')
 
 const formsObj = {}
 const converters = new Nobject()
+
 
 function Amorph(truth, form) {
 
@@ -24,6 +26,7 @@ function Amorph(truth, form) {
 
 Amorph.converters = converters
 Amorph.isReady = true
+Amorph.equivalenceTests = {}
 
 Amorph.prototype.toString = function toString() {
   return `[Amorph ${this.form} : ${this.truth}]`
@@ -47,6 +50,16 @@ Amorph.loadConverters = function loadConverters(convertersNobject) {
 
 }
 
+Amorph.loadPlugin = function loadPlugin(plugin) {
+  if (plugin.pluginVersion !== 1) {
+    throw new PluginVersionError(typeof plugin.pluginVersion, plugin.pluginVersion)
+  }
+  Amorph.loadConverters(plugin.converters)
+  Object.keys(plugin.equivalenceTests).forEach((form) => {
+    Amorph.equivalenceTests[form] = plugin.equivalenceTests[form]
+  })
+}
+
 Amorph.loadConverter = function loadConverter(from, to, converter) {
   converters.set(from, to, converter)
   formsObj[from] = formsObj[to] = true
@@ -67,16 +80,23 @@ Amorph.prototype.to = function to(form) {
   return Amorph.crossConverter.convert(this.truth, this.form, form)
 }
 
+function equivalenceTest(form, a, b) {
+  if (Amorph.equivalenceTests[form]) {
+    return Amorph.equivalenceTests[form](a, b)
+  }
+  return a === b
+}
+
 Amorph.prototype.equals = function equals(amorph, form) {
 
   if (form) {
-    return this.to(form) === amorph.to(form)
+    return equivalenceTest(form, this.to(form), amorph.to(form))
   }
 
   return (
-    this.to(this.form) === amorph.to(this.form)
+    equivalenceTest(this.form, this.to(this.form), amorph.to(this.form))
   ) || (
-    this.to(amorph.form) === amorph.to(amorph.form)
+    equivalenceTest(amorph.form, this.to(amorph.form), amorph.to(amorph.form))
   )
 }
 

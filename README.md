@@ -23,8 +23,8 @@ Amorph.ready()
 new Amorph('hello world', 'string').to('exclamation')
 // >> HELLO WORLD!
 
-Amorph.loadConverters(require('amorph-hex'))
-Amorph.loadConverters(require('amorph-base58'))
+Amorph.loadPlugin(require('amorph-hex'))
+Amorph.loadPlugin(require('amorph-base58'))
 Amorph.ready()
 
 const deadbeef = new Amorph('deadbeef', 'hex')
