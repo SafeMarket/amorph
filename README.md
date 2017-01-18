@@ -34,6 +34,9 @@ deadbeef.to('uint8Array')
 // >> Uint8Array [222, 173, 190, 239]
 deadbeef.to('base58')
 // >> 6h8cQN
+
+deadbeef.clone()
+// >> [Amorph hex : deadbeef]
 ```
 
 ## Running tests

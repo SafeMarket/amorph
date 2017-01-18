@@ -29,6 +29,10 @@ Amorph.prototype.toString = function toString() {
   return `[Amorph ${this.form} : ${this.truth}]`
 }
 
+Amorph.prototype.clone = function clone() {
+  return new Amorph(this.truth, this.form)
+}
+
 Amorph.loadConverters = function loadConverters(convertersNobject) {
 
   if (!(convertersNobject instanceof Nobject)) {
