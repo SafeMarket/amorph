@@ -228,6 +228,21 @@ describe('Amorph', () => {
 
   })
 
+  describe('.as', () => {
+    it('number test', () => {
+      const amorph1 = new Amorph(1, 'number')
+      const amorph2 = amorph1.as('number', (number) => { return number + 1 })
+      amorph1.to('number').should.equal(1)
+      amorph2.to('number').should.equal(2)
+    })
+    it('hex test', () => {
+      const amorph1 = new Amorph('010203', 'hex')
+      const amorph2 = amorph1.as('array', (array) => { return array.slice(-1) })
+      amorph1.to('array').should.deep.equal([1, 2, 3])
+      amorph2.to('array').should.deep.equal([3])
+    })
+  })
+
   describe('readme examples', () => {
 
     it('should work', () => {

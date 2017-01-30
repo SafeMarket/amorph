@@ -100,4 +100,8 @@ Amorph.prototype.equals = function equals(amorph, form) {
   )
 }
 
+Amorph.prototype.as = function as(form, func) {
+  return new Amorph(func(this.to(form)), form)
+}
+
 module.exports = Amorph
