@@ -66,8 +66,8 @@ Amorph.loadConverter = function loadConverter(from, to, converter) {
   Amorph.isReady = false
 }
 
-Amorph.ready = function ready() {
-  Amorph.crossConverter = new CrossConverter(this.converters)
+Amorph.ready = function ready(crossConverterOptions) {
+  Amorph.crossConverter = new CrossConverter(this.converters, crossConverterOptions)
   Amorph.isReady = true
 }
 
