@@ -7,6 +7,7 @@
     "test": "test"
   },
   "dependencies": {
+    "arguguard": "^2.1.1",
     "cross-converter": "0.0.1",
     "nobject": "^0.0.3",
     "testable-error": "^0.0.2"

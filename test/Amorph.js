@@ -3,14 +3,14 @@ const hexPlugin = require('amorph-hex')
 const base58Plugin = require('amorph-base58')
 const bignumberPlugin = require('amorph-bignumber')
 const chai = require('chai')
-const FormNotStringError = require('../errors/FormNotString')
 const PluginVersionError = require('../errors/PluginVersionError')
 const NoFormError = require('../errors/NoForm')
-const NotNobjectError = require('../errors/NotNobject')
 const NotReadyError = require('../errors/NotReady')
 const CCNoPathError = require('cross-converter/errors/NoPath')
 const CCNoFormError = require('cross-converter/errors/NoForm')
 const Nobject = require('nobject')
+const ArgumentTypeError = require('arguguard/errors/user/ArgumentType')
+const ArgumentInstanceError = require('arguguard/errors/user/ArgumentInstance')
 
 chai.should()
 
@@ -35,9 +35,9 @@ describe('Amorph', () => {
     Amorph.isReady.should.equal(false)
   })
 
-  it('should throw FormNotStringError', () => {
+  it('should throw Error', () => {
     // eslint-disable-next-line no-new
-    (() => { new Amorph('hello') }).should.throw(FormNotStringError)
+    (() => { new Amorph('hello') }).should.throw(ArgumentTypeError)
   })
 
   it('should throw NoFormError', () => {
@@ -71,8 +71,8 @@ describe('Amorph', () => {
     amorph.to('uppercase').should.equal('HELLO WORLD!')
   })
 
-  it('should throw NotNobjectError when trying to load a non-nobject', () => {
-    (() => { Amorph.loadConverters({}) }).should.throw(NotNobjectError)
+  it('should throw ArgumentInstanceError when trying to load a non-nobject', () => {
+    (() => { Amorph.loadConverters({}) }).should.throw(ArgumentInstanceError)
   })
 
   it('should load hexPlugin', () => {

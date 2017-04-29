@@ -1,20 +1,37 @@
 const Nobject = require('nobject')
 const CrossConverter = require('cross-converter')
-const FormNotStringError = require('./errors/FormNotString')
 const NoFormError = require('./errors/NoForm')
-const NotNobjectError = require('./errors/NotNobject')
 const NotReadyError = require('./errors/NotReady')
 const PluginVersionError = require('./errors/PluginVersionError')
+const arguguard = require('arguguard')
+const Validator = require('arguguard/lib/Validator')
 
 const formsObj = {}
 const converters = new Nobject()
 
+const optionsValidator = new Validator('OptionsValidator', (arg) => {
+  if (arg === undefined) {
+    return
+  }
+  if (arg instanceof Object) {
+    return
+  }
+  throw new Error('Should be either undefind or instance of Object')
+})
+
+const optionalStringValidator = new Validator('OptionalStringValidator', (arg) => {
+  if (arg === undefined) {
+    return
+  }
+  if (typeof arg === 'string') {
+    return
+  }
+  throw new Error('Should be either undefind or a string')
+})
+
 
 function Amorph(truth, form) {
-
-  if (typeof form !== 'string') {
-    throw new FormNotStringError()
-  }
+  arguguard('Amorph', ['*', 'string'], arguments)
 
   if (formsObj[form] !== true) {
     throw new NoFormError(form)
@@ -29,6 +46,7 @@ Amorph.isReady = true
 Amorph.equivalenceTests = {}
 
 Amorph.prototype.toString = function toString() {
+  arguguard('amorph.toString', [], arguments)
   return `[Amorph ${this.form} : ${this.truth}]`
 }
 
@@ -37,10 +55,7 @@ Amorph.prototype.clone = function clone() {
 }
 
 Amorph.loadConverters = function loadConverters(convertersNobject) {
-
-  if (!(convertersNobject instanceof Nobject)) {
-    throw new NotNobjectError('converters')
-  }
+  arguguard('amorph.loadConverters', ['Nobject'], arguments)
 
   convertersNobject.forEach((args, converter) => {
     const from = args[0]
@@ -51,6 +66,7 @@ Amorph.loadConverters = function loadConverters(convertersNobject) {
 }
 
 Amorph.loadPlugin = function loadPlugin(plugin) {
+  arguguard('amorph.loadPlugin', [optionsValidator], arguments)
   if (plugin.pluginVersion !== 1) {
     throw new PluginVersionError(typeof plugin.pluginVersion, plugin.pluginVersion)
   }
@@ -61,17 +77,20 @@ Amorph.loadPlugin = function loadPlugin(plugin) {
 }
 
 Amorph.loadConverter = function loadConverter(from, to, converter) {
+  arguguard('amorph.loadConverter', ['string', 'string', 'function'], arguments)
   converters.set(from, to, converter)
   formsObj[from] = formsObj[to] = true
   Amorph.isReady = false
 }
 
 Amorph.ready = function ready(crossConverterOptions) {
+  arguguard('amorph.loadPlugin', [optionsValidator], arguments)
   Amorph.crossConverter = new CrossConverter(this.converters, crossConverterOptions)
   Amorph.isReady = true
 }
 
 Amorph.prototype.to = function to(form) {
+  arguguard('amorph.to', [optionalStringValidator], arguments)
 
   if (!Amorph.isReady) {
     throw new NotReadyError()
@@ -88,6 +107,7 @@ function equivalenceTest(form, a, b) {
 }
 
 Amorph.prototype.equals = function equals(amorph, form) {
+  arguguard('amorph.equals', ['Amorph', optionalStringValidator], arguments)
 
   if (form) {
     return equivalenceTest(form, this.to(form), amorph.to(form))
@@ -101,6 +121,7 @@ Amorph.prototype.equals = function equals(amorph, form) {
 }
 
 Amorph.prototype.as = function as(form, func) {
+  arguguard('amorph.equals', ['string', 'function'], arguments)
   return new Amorph(func(this.to(form)), form)
 }
 
