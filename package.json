@@ -1,6 +1,6 @@
 {
   "name": "amorph",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Amorphous javascript object: Express truths in many forms",
   "main": "index.js",
   "directories": {
