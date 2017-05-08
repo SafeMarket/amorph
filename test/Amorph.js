@@ -4,7 +4,6 @@ const base58Plugin = require('amorph-base58')
 const bignumberPlugin = require('amorph-bignumber')
 const chai = require('chai')
 const PluginVersionError = require('../errors/PluginVersionError')
-const NoFormError = require('../errors/NoForm')
 const NotReadyError = require('../errors/NotReady')
 const CCNoPathError = require('cross-converter/errors/NoPath')
 const CCNoFormError = require('cross-converter/errors/NoForm')
@@ -38,11 +37,6 @@ describe('Amorph', () => {
   it('should throw Error', () => {
     // eslint-disable-next-line no-new
     (() => { new Amorph('hello') }).should.throw(ArgumentTypeError)
-  })
-
-  it('should throw NoFormError', () => {
-    // eslint-disable-next-line no-new
-    (() => { new Amorph('hello', 'world') }).should.throw(NoFormError)
   })
 
   it('should create helloworld Amorph', () => {

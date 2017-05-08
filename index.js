@@ -1,6 +1,5 @@
 const Nobject = require('nobject')
 const CrossConverter = require('cross-converter')
-const NoFormError = require('./errors/NoForm')
 const NotReadyError = require('./errors/NotReady')
 const PluginVersionError = require('./errors/PluginVersionError')
 const arguguard = require('arguguard')
@@ -32,10 +31,6 @@ const optionalStringValidator = new Validator('OptionalStringValidator', (arg) =
 
 function Amorph(truth, form) {
   arguguard('Amorph', ['*', 'string'], arguments)
-
-  if (formsObj[form] !== true) {
-    throw new NoFormError(form)
-  }
 
   this.truth = truth
   this.form = form
