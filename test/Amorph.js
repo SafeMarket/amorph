@@ -1,6 +1,7 @@
 const Amorph = require('../')
 const hexPlugin = require('amorph-hex')
 const base58Plugin = require('amorph-base58')
+const bufferPlugin = require('amorph-buffer')
 const bignumberPlugin = require('amorph-bignumber')
 const chai = require('chai')
 const PluginVersionError = require('../errors/PluginVersionError')
@@ -77,6 +78,14 @@ describe('Amorph', () => {
     Amorph.isReady.should.equal(false)
   })
 
+  it('should load bufferPlugin', () => {
+    Amorph.loadPlugin(bufferPlugin)
+  })
+
+  it('should not be ready', () => {
+    Amorph.isReady.should.equal(false)
+  })
+
   it('should ready', () => {
     Amorph.ready()
     Amorph.isReady.should.equal(true)
@@ -139,12 +148,13 @@ describe('Amorph', () => {
   })
 
   it('should convert deadbeef to base58', () => {
+//    console.log(JSON.stringify(JSON.parse(Amorph.crossConverter.paths.toJSON()), null, 2))
     deadbeef.to('base58').should.equal('6h8cQN')
   })
 
   it('should have path from hex.prefixed to base58', () => {
     Amorph.crossConverter.paths.get('hex.prefixed', 'base58').should.be.instanceOf(Array)
-    Amorph.crossConverter.paths.get('hex.prefixed', 'base58').should.deep.equal(['hex.prefixed', 'hex', 'uint8Array', 'base58'])
+    Amorph.crossConverter.paths.get('hex.prefixed', 'base58').should.deep.equal(['hex.prefixed', 'hex', 'buffer', 'base58'])
   })
 
   it('should convert hex.prefixed to base58', () => {
@@ -202,9 +212,9 @@ describe('Amorph', () => {
       amorph1.equals(amorph2, 'bignumber').should.equal(true)
     })
 
-    it('amorph(10, number) should NOT equal(hex) amorph(a, hex)', () => {
+    it('amorph(10, number) should equal(hex) amorph(a, hex)', () => {
       const amorph1 = new Amorph(10, 'number')
-      const amorph2 = new Amorph('a', 'hex')
+      const amorph2 = new Amorph('0a', 'hex')
       amorph1.equals(amorph2, 'hex').should.equal(true)
     })
 
@@ -231,9 +241,11 @@ describe('Amorph', () => {
     })
     it('hex test', () => {
       const amorph1 = new Amorph('010203', 'hex')
-      const amorph2 = amorph1.as('array', (array) => { return array.slice(-1) })
+//      console.log(amorph1.to('hex'))
+//      console.log(amorph1.to('uint8Array'))
+//      const amorph2 = amorph1.as('array', (array) => { return array.slice(-1) })
       amorph1.to('array').should.deep.equal([1, 2, 3])
-      amorph2.to('array').should.deep.equal([3])
+//      amorph2.to('array').should.deep.equal([3])
     })
   })
 

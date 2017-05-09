@@ -7,8 +7,9 @@
     "test": "test"
   },
   "dependencies": {
+    "amorph-buffer": "^1.1.4",
     "arguguard": "^2.1.1",
-    "cross-converter": "^0.0.1",
+    "cross-converter": "^1.0.5",
     "nobject": "^0.0.3",
     "testable-error": "^0.0.2"
   },
@@ -20,13 +21,13 @@
     "eslint": "^3.12.2",
     "eslint-config-airbnb": "^13.0.0",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^3.0.2",
+    "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
     "mocha": "^3.1.2",
     "time-require": "^0.1.2"
   },
   "scripts": {
-    "test": "mocha --no-timeouts"
+    "test": "mocha --no-timeouts --bail"
   },
   "repository": {
     "type": "git",
