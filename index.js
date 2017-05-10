@@ -1,11 +1,9 @@
 const Nobject = require('nobject')
 const CrossConverter = require('cross-converter')
-const NotReadyError = require('./errors/NotReady')
 const PluginVersionError = require('./errors/PluginVersionError')
 const arguguard = require('arguguard')
 const Validator = require('arguguard/lib/Validator')
 
-const formsObj = {}
 const converters = new Nobject()
 
 const optionsValidator = new Validator('OptionsValidator', (arg) => {
@@ -36,9 +34,8 @@ function Amorph(truth, form) {
   this.form = form
 }
 
-Amorph.converters = converters
-Amorph.isReady = true
 Amorph.equivalenceTests = {}
+Amorph.crossConverter = new CrossConverter()
 
 Amorph.prototype.toString = function toString() {
   arguguard('amorph.toString', [], arguments)
@@ -49,48 +46,23 @@ Amorph.prototype.clone = function clone() {
   return new Amorph(this.truth, this.form)
 }
 
-Amorph.loadConverters = function loadConverters(convertersNobject) {
-  arguguard('amorph.loadConverters', ['Nobject'], arguments)
-
-  convertersNobject.forEach((args, converter) => {
-    const from = args[0]
-    const to = args[1]
-    Amorph.loadConverter(from, to, converter)
-  })
-
-}
-
 Amorph.loadPlugin = function loadPlugin(plugin) {
   arguguard('amorph.loadPlugin', [optionsValidator], arguments)
   if (plugin.pluginVersion !== 1) {
-    throw new PluginVersionError(typeof plugin.pluginVersion, plugin.pluginVersion)
+    throw new PluginVersionError(`Cannot handle plugin with pluginVersion [${typeof plugin.pluginVersion} ${plugin.pluginVersion}]`)
   }
-  Amorph.loadConverters(plugin.converters)
+  plugin.converters.forEach((args, converter) => {
+    const from = args[0]
+    const to = args[1]
+    Amorph.crossConverter.addConverter(from, to, converter)
+  })
   Object.keys(plugin.equivalenceTests).forEach((form) => {
     Amorph.equivalenceTests[form] = plugin.equivalenceTests[form]
   })
 }
 
-Amorph.loadConverter = function loadConverter(from, to, converter) {
-  arguguard('amorph.loadConverter', ['string', 'string', 'function'], arguments)
-  converters.set(from, to, converter)
-  formsObj[from] = formsObj[to] = true
-  Amorph.isReady = false
-}
-
-Amorph.ready = function ready(crossConverterOptions) {
-  arguguard('amorph.loadPlugin', [optionsValidator], arguments)
-  Amorph.crossConverter = new CrossConverter(this.converters, crossConverterOptions)
-  Amorph.isReady = true
-}
-
 Amorph.prototype.to = function to(form) {
   arguguard('amorph.to', [optionalStringValidator], arguments)
-
-  if (!Amorph.isReady) {
-    throw new NotReadyError()
-  }
-
   return Amorph.crossConverter.convert(this.truth, this.form, form)
 }
 

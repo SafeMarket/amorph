@@ -8,9 +8,8 @@
   },
   "dependencies": {
     "arguguard": "^2.1.1",
-    "cross-converter": "^1.0.6",
-    "nobject": "^0.0.3",
-    "testable-error": "^0.0.2"
+    "cross-converter": "^3.0.1",
+    "testable-error": "^0.1.2"
   },
   "devDependencies": {
     "amorph-base58": "^1.0.0",

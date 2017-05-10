@@ -16,16 +16,16 @@ $ npm i amorph --save
 ```js
 
 const Amorph = require('amorph')
-Amorph.loadConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
-Amorph.loadConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
-Amorph.ready()
+Amorph.crossConverter.addConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
+Amorph.crossConverter.addConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
+Amorph.crossConverter.addPath(['string', 'uppercase', 'exclamation'])
 
 new Amorph('hello world', 'string').to('exclamation')
 // >> HELLO WORLD!
 
 Amorph.loadPlugin(require('amorph-hex'))
 Amorph.loadPlugin(require('amorph-base58'))
-Amorph.ready()
+Amorph.crossConverter.addPath(['hex.prefixed', 'hex', 'buffer', 'base58'])
 
 const deadbeef = new Amorph('deadbeef', 'hex')
 deadbeef.to('hex.prefixed')
