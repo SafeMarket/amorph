@@ -9,7 +9,7 @@
   "dependencies": {
     "amorph-buffer": "^1.1.4",
     "arguguard": "^2.1.1",
-    "cross-converter": "^1.0.5",
+    "cross-converter": "^1.0.6",
     "nobject": "^0.0.3",
     "testable-error": "^0.0.2"
   },
