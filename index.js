@@ -32,8 +32,7 @@ function Amorph(truth, form) {
 
   this.truth = truth
   this.form = form
-  this.toCache = {}
-  this.asCache = {}
+  this.cache = {}
 }
 
 Amorph.equivalenceTests = {}
@@ -65,11 +64,11 @@ Amorph.loadPlugin = function loadPlugin(plugin) {
 
 Amorph.prototype.to = function to(form) {
   arguguard('amorph.to', [optionalStringValidator], arguments)
-  if (this.toCache[form]) {
-    return this.toCache[form]
+  if (this.cache[form]) {
+    return this.cache[form]
   }
   const thisTo = Amorph.crossConverter.convert(this.truth, this.form, form)
-  this.toCache[form] = thisTo
+  this.cache[form] = thisTo
   return thisTo
 }
 
@@ -96,12 +95,7 @@ Amorph.prototype.equals = function equals(amorph, form) {
 
 Amorph.prototype.as = function as(form, func) {
   arguguard('amorph.equals', ['string', 'function'], arguments)
-  if (this.asCache[form] !== undefined) {
-    return this.asCache[form]
-  }
-  const thisAsForm = new Amorph(func(this.to(form)), form)
-  this.asCache[form] = thisAsForm
-  return thisAsForm
+  return new Amorph(func(this.to(form)), form)
 }
 
 module.exports = Amorph
