@@ -1,101 +1,39 @@
-const Nobject = require('nobject')
-const CrossConverter = require('cross-converter')
-const PluginVersionError = require('./errors/PluginVersionError')
-const arguguard = require('arguguard')
-const Validator = require('arguguard/lib/Validator')
+const defunction = require('defunction')
 
-const converters = new Nobject()
-
-const optionsValidator = new Validator('OptionsValidator', (arg) => {
-  if (arg === undefined) {
-    return
-  }
-  if (arg instanceof Object) {
-    return
-  }
-  throw new Error('Should be either undefind or instance of Object')
+const Amorph = module.exports = defunction(['Uint8Array'], '*', function Amorph(uint8Array) {
+  this.uint8Array = uint8Array
 })
 
-const optionalStringValidator = new Validator('OptionalStringValidator', (arg) => {
-  if (arg === undefined) {
-    return
-  }
-  if (typeof arg === 'string') {
-    return
-  }
-  throw new Error('Should be either undefind or a string')
+Amorph.prototype.toString = defunction([], 'string', function toString() {
+  return `[Amorph uint8Array : [${this.uint8Array}]]`
 })
 
+Amorph.prototype.clone = defunction([], 'Amorph', function clone() {
+  return new Amorph(this.uint8Array.slice())
+})
 
-function Amorph(truth, form) {
-  arguguard('Amorph', ['*', 'string'], arguments)
+Amorph.prototype.to = defunction(['AmorphConverter'], '*', function to(converter) {
+  return converter.to(this.uint8Array)
+})
 
-  this.truth = truth
-  this.form = form
-  this.cache = {}
-}
-
-Amorph.equivalenceTests = {}
-Amorph.crossConverter = new CrossConverter()
-
-Amorph.prototype.toString = function toString() {
-  arguguard('amorph.toString', [], arguments)
-  return `[Amorph ${this.form} : ${this.truth}]`
-}
-
-Amorph.prototype.clone = function clone() {
-  return new Amorph(this.truth, this.form)
-}
-
-Amorph.loadPlugin = function loadPlugin(plugin) {
-  arguguard('amorph.loadPlugin', [optionsValidator], arguments)
-  if (plugin.pluginVersion !== 1) {
-    throw new PluginVersionError(`Cannot handle plugin with pluginVersion [${typeof plugin.pluginVersion} ${plugin.pluginVersion}]`)
+Amorph.prototype.equals = defunction(['Amorph'], 'boolean', function equals(amorph) {
+  if (amorph.uint8Array.length !== this.uint8Array.length) {
+    return false
   }
-  plugin.converters.forEach((args, converter) => {
-    const from = args[0]
-    const to = args[1]
-    Amorph.crossConverter.addConverter(from, to, converter)
-  })
-  Object.keys(plugin.equivalenceTests).forEach((form) => {
-    Amorph.equivalenceTests[form] = plugin.equivalenceTests[form]
-  })
-}
-
-Amorph.prototype.to = function to(form) {
-  arguguard('amorph.to', [optionalStringValidator], arguments)
-  if (this.cache[form]) {
-    return this.cache[form]
+  for (let i = 0; i < amorph.uint8Array.length; i += 1) {
+    if (amorph.uint8Array[i] !== this.uint8Array[i]) {
+      return false
+    }
   }
-  const thisTo = Amorph.crossConverter.convert(this.truth, this.form, form)
-  this.cache[form] = thisTo
-  return thisTo
-}
+  return true
+})
 
-function equivalenceTest(form, a, b) {
-  if (Amorph.equivalenceTests[form]) {
-    return Amorph.equivalenceTests[form](a, b)
-  }
-  return a === b
-}
+Amorph.from = defunction(['AmorphConverter', '*'], 'Amorph', function from(converter, value) {
+  return new Amorph(converter.from(value))
+})
 
-Amorph.prototype.equals = function equals(amorph, form) {
-  arguguard('amorph.equals', ['Amorph', optionalStringValidator], arguments)
-
-  if (form) {
-    return equivalenceTest(form, this.to(form), amorph.to(form))
-  }
-
-  return (
-    equivalenceTest(this.form, this.to(this.form), amorph.to(this.form))
-  ) || (
-    equivalenceTest(amorph.form, this.to(amorph.form), amorph.to(amorph.form))
-  )
-}
-
-Amorph.prototype.as = function as(form, func) {
-  arguguard('amorph.equals', ['string', 'function'], arguments)
-  return new Amorph(func(this.to(form)), form)
-}
+Amorph.prototype.as = defunction(['AmorphConverter', 'function'], 'Amorph', function as(converter, func) {
+  return Amorph.from(converter, func(this.to(converter)))
+})
 
 module.exports = Amorph

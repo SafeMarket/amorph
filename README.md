@@ -14,29 +14,35 @@ $ npm i amorph --save
 ## Usage
 
 ```js
+  // Basic Usage
 
-const Amorph = require('amorph')
-Amorph.crossConverter.addConverter('string', 'uppercase', (string) => { return string.toUpperCase() })
-Amorph.crossConverter.addConverter('uppercase', 'exclamation', (uppercase) => { return uppercase + '!' })
-Amorph.crossConverter.addPath(['string', 'uppercase', 'exclamation'])
+  const Amorph = require('amorph')
+  const amorphHex = require('amorph-hex')
+  const amorphInt = require('amorph-int')
 
-new Amorph('hello world', 'string').to('exclamation')
-// >> HELLO WORLD!
+  const myBalance  = Amorph.from(amorphHex, '0101')
 
-Amorph.loadPlugin(require('amorph-hex'))
-Amorph.loadPlugin(require('amorph-base58'))
-Amorph.crossConverter.addPath(['hex.prefixed', 'hex', 'buffer', 'base58'])
+  myBalance.to(amorphInt)
+  // >> 257
 
-const deadbeef = new Amorph('deadbeef', 'hex')
-deadbeef.to('hex.prefixed')
-// >> 0xdeadbeef
-deadbeef.to('uint8Array')
-// >> Uint8Array [222, 173, 190, 239]
-deadbeef.to('base58')
-// >> 6h8cQN
+  myBalance.as(amorphInt, (int) => {
+    return int - 2
+  }).to(amorphHex)
+  // >> 'ff'
 
-deadbeef.clone()
-// >> [Amorph hex : deadbeef]
+  // Custom Converters
+  const AmorphConverter = require('amorph/lib/AmorphConverter')
+  const amorphAscii = new AmorphConverter((uint8Array) => {
+    // Given a uint8Array, returns ascii
+    return asciiEncoder.encode(uint8Array)
+  }, (ascii) => {
+    // Given ascii, returns uint8Array
+    return asciiEncoder.decode(ascii)
+  })
+
+  Amorph.from(amorphAscii, 'hello world!').to(hexConverter)
+  // >> 68656c6c6f20776f726c6421
+
 ```
 
 ## Running tests

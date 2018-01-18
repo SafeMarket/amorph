@@ -7,8 +7,8 @@
     "test": "test"
   },
   "dependencies": {
-    "arguguard": "^2.1.1",
     "cross-converter": "^3.0.1",
+    "defunction": "^4.0.4",
     "testable-error": "^0.1.2"
   },
   "devDependencies": {
@@ -22,6 +22,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.8.0",
+    "intcoder": "0.0.3",
     "mocha": "^3.1.2",
     "time-require": "^0.1.2"
   },
