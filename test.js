@@ -1,7 +1,7 @@
 /* globals describe, it */
 
 const Amorph = require('./')
-const AmorphConverter = require('./lib/AmorphConverter')
+const AmorphConverter = require('amorph-converter')
 const chai = require('chai')
 const intcoder = require('intcoder')
 
