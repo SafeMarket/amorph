@@ -7,7 +7,7 @@
     "test": "test"
   },
   "dependencies": {
-    "defunction": "^4.0.4"
+    "defunction": "^5.1.1"
   },
   "devDependencies": {
     "amorph-converter": "^1.0.0",
