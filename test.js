@@ -49,6 +49,10 @@ describe('Amorph', () => {
     }).uint8Array.should.deep.equal(new Uint8Array([255]))
   })
 
+  it('should toString', () => {
+    amorph.toString().should.deep.equal('Amorph:[1,1]')
+  })
+
   describe('amorph-hex', () => {
     it('should would work', () => {
       Amorph.from(amorphHex.unprefixed, '0101').as(amorphInt, (int) => {
@@ -56,5 +60,6 @@ describe('Amorph', () => {
       }).to(amorphHex.prefixed).should.equal('0xff')
     })
   })
+
 
 })

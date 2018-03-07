@@ -49,4 +49,8 @@ Amorph.prototype.as = defunction([validateAmorphConverter, validateFunction], va
   return Amorph.from(converter, func(this.to(converter)))
 })
 
+Amorph.prototype.toString = defunction([], validateString, function toString() {
+  return `Amorph:[${Array.from(this.uint8Array)}]`
+})
+
 module.exports = Amorph
